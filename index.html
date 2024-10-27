@@ -9,7 +9,19 @@
     <link rel="stylesheet" href="navbar.css"> <!-- Link to the navbar CSS file -->
     <link rel="stylesheet" href="footer.css">
     <style>
-        
+            /* Additional Responsive CSS for .random-course-item */
+    @media (max-width: 768px) {
+        .random-course-item {
+            width: calc(45% - 2rem); /* Adjust to 45% width for medium screens */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .random-course-item {
+            width: calc(100% - 2rem); /* Full width for smaller screens */
+            margin: 1rem auto; /* Center items on narrow screens */
+        }
+    }
         .berkeley-section {
             padding: 4rem 2rem;
             background-color: #f9f9f9;
