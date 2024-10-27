@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Project Tiger</title>
+    <link rel="stylesheet" href="navbar.css"> <!-- Link to the navbar CSS file -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="navbar.css"> <!-- Keep navbar consistent CSS file -->
+
+    <style>
+        .about-section {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .about-section h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .about-section p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .about-section ul {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 600px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .about-section ul li {
+            margin-bottom: 1rem;
+        }
+
+        .explore-section, .contribute-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .explore-btn, .contact-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+
+        .explore-btn {
+            background-color: #f09a58;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .explore-btn:hover {
+            background-color: #F58025;
+        }
+
+        .contact-btn {
+            background-color: #e5e7eb;
+            color: #333;
+            margin-top: 0.5rem;
+        }
+
+        .contact-btn:hover {
+            background-color: #d1d5db;
+        }
+
+        .footer {
+            background-color: #000;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 2rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="logo/logo-large.png" alt="Project Tiger Logo">
+            <h1>Project Tiger</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="find-courses.html">Courses</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <div class="about-section">
+        <h3>Project Tiger</h3>
+        <p>Project Tiger is an innovative platform designed by students for students, aiming to make course selection easy and informed at the University of the Pacific.</p>
+        <p>Launched in Winter/Spring 2024-25, our goal is to help students navigate their academic journey by providing detailed course information, including grades, instructor details, and more.</p>
+
+        <h3>Our Vision</h3>
+        <p>We believe in the power of knowledge and education to transform lives. Our platform enables students to find courses and professors that align with their academic and career goals.</p>
+
+        <h3>What We Offer</h3>
+        <ul>
+            <li>Comprehensive course information, including average grades, percentiles, and historic data.</li>
+            <li>User-friendly search features to streamline the process of finding courses.</li>
+            <li>A supportive community for students to connect and collaborate.</li>
+        </ul>
+
+        <div class="explore-section">
+            <a href="find-courses.html" class="explore-btn">Explore Courses</a>
+        </div>
+
+        <div class="contribute-section">
+            <p>Want to help be a part of the team and contribute?</p>
+            <a href="contact.html" class="contact-btn">Contact Us</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Project Tiger. All rights reserved.</p>
+    </div>
+
+</body>
+
+</html>
