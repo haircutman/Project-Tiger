@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course List - Project Tiger</title>
+    
+    <link rel="stylesheet" href="navbar.css"> <!-- keep navbar consistent CSS file -->
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .course-list {
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: white;
+            padding: 2rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .course-list h2 {
+            color: #F58025;
+        }
+
+        .course-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .course-list li {
+            margin-bottom: 1rem;
+        }
+
+        .course-list a {
+            color: #003262;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .course-list a:hover {
+            color: #F58025;
+        }
+
+        .footer {
+            background-color: #000;
+            color: #FFF;
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <div class="brand">
+            <img src="logo/logo-large.png" alt="Project Tiger Logo">
+            <h1>Project Tiger</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="find-courses.html">Courses</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <div class="course-list">
+        <h2>Available Courses</h2>
+        <ul id="courseList"></ul>
+    </div>
+
+    <script>
+        async function loadCourses() {
+            try {
+                const response = await fetch('data/updated_course_data_with_grades.json');
+                const courses = await response.json();
+                const courseList = document.getElementById('courseList');
+
+                // Dynamically populate the course list
+                courses.forEach(course => {
+                    const courseLink = document.createElement('li');
+                    courseLink.innerHTML = `
+                        <a href="course.html?course=${encodeURIComponent(course.course_code)}%20${encodeURIComponent(course.course_number)}">
+                            ${course.course_code} ${course.course_number}: ${course.course_title}
+                        </a>`;
+                    courseList.appendChild(courseLink);
+                });
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            }
+        }
+
+        window.onload = loadCourses;
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Project Tiger</title>
+
+    <link rel="stylesheet" href="navbar.css"> <!-- Link to the navbar CSS file -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        .faq-section {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .faq-section h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .faq-section p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .faq-item {
+            margin: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .faq-item button {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            font-size: 1.2rem;
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .faq-item button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .faq-item button span {
+            color: orange; /* Bright orange color */
+            font-weight: bold;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .faq-item button:hover span {
+            color: darkorange; /* Slightly darker on hover */
+        }
+
+        .faq-item .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1rem;
+        }
+
+        .faq-item.active .content {
+            max-height: 150px; /* Adjust based on content */
+            margin-top: 0.5rem;
+        }
+
+        .contact-btn {
+            padding: 0.8rem 2rem;
+            background-color: #e5e7eb;
+            color: #333;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .contact-btn:hover {
+            background-color: #d1d5db;
+        }
+
+        .footer {
+            background-color: #000;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .faq-section {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="logo/logo-large.png" alt="Project Tiger Logo">
+            <h1>Project Tiger</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="find-courses.html">Courses</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <p>Answering your most commonly asked questions.</p>
+
+        <div class="faq-item">
+            <button onclick="toggleFaq(this)">Where does Project Tiger get its data? <span>+</span></button>
+            <div class="content">
+                <p>We request historic data from the University of The Pacific's Registrar.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button onclick="toggleFaq(this)">Why does enrollment sometimes exceed 100%? <span>+</span></button>
+            <div class="content">
+                <p>This can happen due to overlapping enrollment periods or temporary over-enrollment allowances.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button onclick="toggleFaq(this)">How can I contact the Project Tiger team? <span>+</span></button>
+            <div class="content">
+                <p>You can reach out via our contact form or email us at support@projecttiger.edu.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button onclick="toggleFaq(this)">When is enrollment data updated? <span>+</span></button>
+            <div class="content">
+                <p>Data is refreshed every 24 hours during the registration period.</p>
+            </div>
+        </div>
+
+        <a href="contact.html" class="contact-btn">Contact Us</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Project Tiger. All rights reserved.</p>
+    </div>
+
+    <script>
+        function toggleFaq(button) {
+            const faqItem = button.parentElement;
+            faqItem.classList.toggle('active');
+            const span = button.querySelector('span');
+            span.textContent = faqItem.classList.contains('active') ? '-' : '+';
+        }
+    </script>
+
+</body>
+
+</html>

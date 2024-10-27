@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Courses | Project Tiger</title>
+
+    <link rel="stylesheet" href="navbar.css"> <!-- keep navbar consistent CSS file -->
+    <link rel="stylesheet" href="footer.css">
+
+    <style>
+        .search-container {
+            background-color: #F58025; /* Pacific Orange */
+            padding: 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .search-container h2 {
+            margin: 0 0 1rem;
+            font-size: 2.5rem;
+            color: #FFFFFF; /* White */
+        }
+
+        .search-bar {
+            padding: 1rem;
+            width: 50%;
+            max-width: 600px;
+            border: none;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .autocomplete-suggestions {
+            border: 1px solid #ddd;
+            background-color: white;
+            position: absolute;
+            width: 50%;
+            max-width: 600px;
+            left: 25%;
+            text-align: left;
+            z-index: 1;
+        }
+
+        .autocomplete-suggestion {
+            padding: 0.75rem;
+            cursor: pointer;
+        }
+
+        .autocomplete-suggestion:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-container {
+            margin-top: 2rem;
+        }
+
+        .find-courses-button {
+            background-color: #de956c;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .find-courses-button:hover {
+            background-color: #F58025;
+            box-shadow: 0 4px 15px rgba(245, 128, 37, 0.5);
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+    
+<div class="navbar">
+    <div class="brand">
+        <img src="logo/logo-large.png" alt="Project Tiger Logo">
+        <h1>Project Tiger</h1>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="find-courses.html">Courses</a>
+        <a href="about.html">About</a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</div>
+
+    <!-- Search section -->
+    <div class="search-container">
+        <h2>Find Your Course</h2>
+        <input type="text" class="search-bar" id="courseSearchBar" placeholder="Search for a course by name...">
+        <div class="autocomplete-suggestions" id="suggestionsContainer" style="display: none;"></div>
+
+        <!-- Button to go to the course list -->
+        <div class="button-container">
+            <a href="courses-list.html">
+                <button class="find-courses-button">View Full Course List</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let courseList = []; // List to store course previews
+
+        // Fetch course data from the JSON file
+        async function fetchCourses() {
+            try {
+                const response = await fetch('data/course_data.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                // Format the course name preview with code and number
+                data.forEach(item => {
+                    const coursePreview = `${item.course_code} ${item.course_number}`.trim();
+                    if (coursePreview && !courseList.includes(coursePreview)) {
+                        courseList.push(coursePreview); // Store formatted preview
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to fetch course data:', error);
+            }
+        }
+
+        // Function to display suggestions
+        function showSuggestions(input) {
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+            if (input.length === 0) {
+                suggestionsContainer.style.display = 'none'; // Hide if input is empty
+                return;
+            }
+
+            // Filter courses based on the input
+            const filteredCourses = courseList.filter(course =>
+                course.toLowerCase().includes(input.toLowerCase())
+            );
+
+            // Custom sort: prioritize courses that start with the input
+            filteredCourses.sort((a, b) => {
+                const inputLower = input.toLowerCase();
+                const startsWithA = a.toLowerCase().startsWith(inputLower);
+                const startsWithB = b.toLowerCase().startsWith(inputLower);
+
+                if (startsWithA && !startsWithB) return -1;
+                if (!startsWithA && startsWithB) return 1;
+                return a.localeCompare(b); // Default sorting
+            });
+
+            // Show top 5 suggestions
+            filteredCourses.slice(0, 5).forEach(course => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('autocomplete-suggestion');
+                suggestionItem.textContent = course;
+                suggestionItem.onclick = () => {
+                    document.getElementById('courseSearchBar').value = course;
+                    suggestionsContainer.style.display = 'none';
+                };
+                suggestionsContainer.appendChild(suggestionItem);
+            });
+
+            suggestionsContainer.style.display = 'block'; // Show suggestions
+        }
+
+        // Event listener for search bar input
+        document.getElementById('courseSearchBar').addEventListener('input', function () {
+            const input = this.value.trim();
+            showSuggestions(input);
+        });
+
+        // Call fetchCourses to load data on page load
+        fetchCourses();
+    </script>
+<!-- Footer section -->
+<footer class="custom-footer"> 
+    <div class="footer-section">
+        <h3>SUPPORT</h3>
+        <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+        </ul>
+    </div>
+
+    <div class="footer-section">
+        <h3>UPDATES</h3>
+        <ul>
+            <li><a href="#">Releases</a></li>
+            <li><a href="https://github.com/" target="_blank">GitHub</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Facebook</a></li>
+        </ul>
+    </div>
+
+    <div class="footer-section">
+        <h3>ABOUT US</h3>
+        <ul>
+            <li><a href="about.html">Our Team</a></li>
+            <li><a href="#">ASUC OCTO</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html">Terms of Service</a></li>
+        </ul>
+    </div>
+</footer>
+
+
+</body>
+
+</html>
