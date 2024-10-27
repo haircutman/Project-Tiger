@@ -119,6 +119,7 @@
             <img src="logo/logo-large.png" alt="Project Tiger Logo">
             <h1>Project Tiger</h1>
         </div>
+        <div class="hamburger" onclick="toggleMenu()">☰</div> <!-- Hamburger Icon -->
         <nav>
             <a href="index.html">Home</a>
             <a href="find-courses.html">Courses</a>
@@ -174,6 +175,13 @@
             const span = button.querySelector('span');
             span.textContent = faqItem.classList.contains('active') ? '-' : '+';
         }
+        function toggleMenu() {
+    const nav = document.querySelector(".navbar nav");
+    const overlay = document.querySelector(".overlay");
+
+    nav.classList.toggle("active");
+    overlay.classList.toggle("active");
+}
     </script>
 
 </body>

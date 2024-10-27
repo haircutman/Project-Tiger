@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details - Project Tiger</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="navbar.css"> <!-- keep navbar consistent CSS file -->
+
+    <style>
+        
+        .course-details {
+            padding: 2rem;
+            background-color: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .course-details h2 {
+            color: #F58025; /* Pacific Orange */
+            margin-top: 0;
+        }
+
+        .grade-chart {
+            margin-top: 2rem;
+            background-color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #000000; /* Pacific Black */
+            color: white;
+        }
+
+        .tooltip {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the tooltip */
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #letterGrade {
+            font-weight: bold;
+            padding: 0.2rem;
+        }
+
+        #hoverInfo {
+            margin-top: 1rem;
+            font-style: italic;
+        }
+    </style>
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="logo/logo-large.png" alt="Project Tiger Logo">
+            <h1>Project Tiger</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="find-courses.html">Courses</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <div class="course-details">
+        <h2 id="courseTitle">Course Information</h2>
+        <p id="instructorName">Instructor: </p>
+        <p id="courseID">Course ID: </p>
+        <p id="letterAverage">Letter Average: <span id="letterGrade"></span>
+            <span class="tooltip">&#9432;
+                <span class="tooltiptext">Most common letter grade based on distribution.</span>
+            </span>
+        </p>
+        <p id="gpaAverage">GPA Average: <span class="tooltip">?
+                <span class="tooltiptext">Average calculated from letter grades.</span>
+            </span></p>
+
+        <p id="hoverInfo">Hover over a grade bar to see more info.</p>
+
+        <div class="grade-chart">
+            <h3>Grade Distribution</h3>
+            <!-- Canvas for Chart.js -->
+            <canvas id="gradeDistributionChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Function to get the course name from the URL
+        function getCourseNameFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseName = decodeURIComponent(urlParams.get('course'));
+            return courseName;
+        }
+
+        // Function to fetch course data
+        async function fetchCourseData() {
+            try {
+                const response = await fetch('data/updated_course_data_with_grades.json');  // Path to your JSON file
+                const data = await response.json();
+                const courseName = getCourseNameFromURL();
+
+                // Find the course using the course title from the JSON
+                const selectedCourse = data.find(course => `${course.course_code} ${course.course_number}` === courseName);
+
+                if (!selectedCourse) {
+                    document.querySelector('.course-details').innerHTML = '<p>Course not found.</p>';
+                    return;
+                }
+
+                // Display the course title, instructor, and course ID
+                document.getElementById('courseTitle').innerText = selectedCourse.course_title || "Unknown Course Title";
+                document.getElementById('instructorName').innerText = `Instructor: ${selectedCourse.professor_name || 'N/A'}`;
+                document.getElementById('courseID').innerText = `Course ID: ${selectedCourse.course_code} ${selectedCourse.course_number}`;
+
+                // Calculate and display the grade distribution
+                displayGradeData(selectedCourse.grades);
+            } catch (error) {
+                document.querySelector('.course-details').innerText = 'Error loading data.';
+                console.error('Error fetching course data:', error);
+            }
+        }
+
+        // Function to display the grade data using Chart.js
+        function displayGradeData(grades) {
+            let totalStudents = 0;
+            let weightedSum = 0;  // For calculating the GPA average
+
+            // Grade weights (A=4.0, B=3.0, C=2.0, D=1.0, F=0.0)
+            const gradeWeights = { 'A+': 4.0, 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1.0, 'D-': 0.7, 'F': 0.0 };
+
+            // Process grades to calculate totals
+            const gradeKeys = Object.keys(grades);
+            gradeKeys.forEach(grade => {
+                const studentCount = grades[grade];
+                totalStudents += studentCount;
+                weightedSum += studentCount * (gradeWeights[grade] || 0);  // Add weighted grade value
+            });
+
+            // Calculate GPA average
+            const gpaAverage = (weightedSum / totalStudents).toFixed(2);
+            document.getElementById('gpaAverage').innerText = `GPA Average: ${gpaAverage}`;
+
+            // Determine letter grade from GPA average
+            let letterAverage;
+            if (gpaAverage >= 3.7) letterAverage = 'A+';
+            else if (gpaAverage >= 3.3) letterAverage = 'A';
+            else if (gpaAverage >= 3.0) letterAverage = 'A-';
+            else if (gpaAverage >= 2.7) letterAverage = 'B+';
+            else if (gpaAverage >= 2.3) letterAverage = 'B';
+            else if (gpaAverage >= 2.0) letterAverage = 'B-';
+            else if (gpaAverage >= 1.7) letterAverage = 'C+';
+            else if (gpaAverage >= 1.0) letterAverage = 'C';
+            else if (gpaAverage >= 0.7) letterAverage = 'D+';
+            else if (gpaAverage >= 0) letterAverage = 'D';
+            else letterAverage = 'F';
+
+            // Update letter average display
+            const letterColor = getColorForGrade(letterAverage); // Get color based on letter average
+            document.getElementById('letterGrade').innerHTML = `<span style="color:${letterColor};">${letterAverage}</span>`; 
+
+            // Calculate percentiles
+            const cumulativeCounts = [];
+            let cumulativeTotal = 0;
+
+            gradeKeys.forEach(grade => {
+                cumulativeTotal += grades[grade];
+                cumulativeCounts.push(cumulativeTotal);
+            });
+
+            // Generate chart with Chart.js
+            const ctx = document.getElementById('gradeDistributionChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: gradeKeys,
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: gradeKeys.map(grade => grades[grade]),
+                        backgroundColor: '#003262',
+                        borderColor: '#003262',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Students'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Grades'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const count = context.raw; // Number of students
+                                    return `${context.label}: ${count}`; // Display count only
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            let lastGradeInfo = null; // Variable to hold the last hovered grade info
+
+            // Function to get color based on the letter grade
+            function getColorForGrade(grade) {
+                const colors = {
+                    'A+': 'green',
+                    'A': 'green',
+                    'A-': '#4CAF50',
+                    'B+': '#8BC34A',
+                    'B': '#CDDC39',
+                    'B-': '#fad27a',
+                    'C+': '#FFC107',
+                    'C': '#FF9800',
+                    'C-': '#FF5722',
+                    'D+': '#FF7043',
+                    'D': 'red',
+                    'D-': 'red',
+                    'F': 'red'
+                };
+                return colors[grade] || 'black'; // Default color if grade not found
+            }
+
+            // Add hover event listener to update display info
+            chart.canvas.addEventListener('mousemove', function(evt) {
+                const activePoints = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                if (activePoints.length) {
+                    const index = activePoints[0].index;
+                    const grade = gradeKeys[index];
+                    const count = grades[grade];
+
+                    // Calculate percentile from 100 to 0
+                    const percentile = (100 - (cumulativeCounts[index] / totalStudents * 100)).toFixed(2);
+                    const gradeColor = getColorForGrade(grade); // Get color based on grade
+
+                    // Update lastGradeInfo with the current hovered information
+                    lastGradeInfo = `Grade: <span style="color:${gradeColor};">${grade}</span>, Count: ${count}, Percentile: ${percentile}%`;
+                    document.getElementById('hoverInfo').innerHTML = lastGradeInfo; // Update the display
+                } 
+            });
+
+            // Add mouseleave event to retain last information
+            chart.canvas.addEventListener('mouseleave', function() {
+                // Retain the last information when the mouse leaves the chart
+                if (lastGradeInfo) {
+                    document.getElementById('hoverInfo').innerHTML = lastGradeInfo; // Keep displaying the last info
+                } else {
+                    document.getElementById('hoverInfo').innerText = 'Hover over a grade bar to see more info.'; // Reset if nothing was hovered
+                }
+            });
+        }
+
+        // Fetch course data on page load
+        fetchCourseData();
+    </script>
+
+</body>
+</html>

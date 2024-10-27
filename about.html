@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Project Tiger</title>
+    <title>About | Project Tiger</title>
     <link rel="stylesheet" href="navbar.css"> <!-- Link to the navbar CSS file -->
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -110,6 +110,7 @@
             <img src="logo/logo-large.png" alt="Project Tiger Logo">
             <h1>Project Tiger</h1>
         </div>
+        <div class="hamburger" onclick="toggleMenu()">☰</div> <!-- Hamburger Icon -->
         <nav>
             <a href="index.html">Home</a>
             <a href="find-courses.html">Courses</a>
@@ -143,6 +144,17 @@
             <a href="contact.html" class="contact-btn">Contact Us</a>
         </div>
     </div>
+
+
+    <script>
+        function toggleMenu() {
+    const nav = document.querySelector(".navbar nav");
+    const overlay = document.querySelector(".overlay");
+
+    nav.classList.toggle("active");
+    overlay.classList.toggle("active");
+}
+    </script>
 
     <div class="footer">
         <p>&copy; 2024 Project Tiger. All rights reserved.</p>
